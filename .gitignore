@@ -1,0 +1,23 @@
+# Child product repositories managed independently.
+/acornops-deployment/
+/control-plane/
+/docs-website/
+/execution-engine/
+/k8s-agent/
+/vm-agent/
+/llm-gateway/
+/management-console/
+
+# Local review and planning artifacts.
+/security/
+/security-completed/
+/optimizations/
+/change-sets/active/*.md
+/change-sets/completed/*.md
+
+# Local helper scripts replaced by explicit workspace workflows.
+/git-add-and-push-all.sh
+/git-pull-all.sh
+
+# Local/editor noise.
+/.DS_Store

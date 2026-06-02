@@ -1,0 +1,52 @@
+workspace:
+  name: acornops
+  description: Versioned AcornOps multi-repository workspace harness.
+
+repositories:
+  - name: acornops-deployment
+    path: ./acornops-deployment
+    remote: git@github.com:acornops/acornops-deployment.git
+    default_branch: main
+    validate: task validate
+
+  - name: control-plane
+    path: ./control-plane
+    remote: git@github.com:acornops/control-plane.git
+    default_branch: main
+    validate: npm run validate
+
+  - name: docs-website
+    path: ./docs-website
+    remote: git@github.com:acornops/docs.git
+    default_branch: main
+    validate: npm run validate
+
+  - name: execution-engine
+    path: ./execution-engine
+    remote: git@github.com:acornops/execution-engine.git
+    default_branch: main
+    validate: task validate
+
+  - name: k8s-agent
+    path: ./k8s-agent
+    remote: git@github.com:acornops/k8s-agent.git
+    default_branch: main
+    validate: npm run validate
+
+  - name: vm-agent
+    path: ./vm-agent
+    remote: git@github.com:acornops/vm-agent.git
+    default_branch: main
+    validate: npm run validate
+
+  - name: llm-gateway
+    path: ./llm-gateway
+    remote: git@github.com:acornops/llm-gateway.git
+    default_branch: main
+    validate: task validate
+
+  - name: management-console
+    path: ./management-console
+    remote: git@github.com:acornops/management-console.git
+    default_branch: main
+    validate: npm run validate

@@ -1,0 +1,151 @@
+# Harness Adoption Guide
+
+This guide explains how AcornOps repositories should adopt shared harness
+standards without losing repository-specific ownership.
+
+## Model
+
+AcornOps uses three layers:
+
+1. Workspace harness: the parent `acornops` repository.
+2. Repo-local harness: each standalone GitHub repository.
+3. Platform harness: deployment/integration repository.
+
+The underlying agent-harness rationale is captured in
+[`openai-harness-engineering.md`](openai-harness-engineering.md), which maps
+OpenAI Codex-style repo navigation, editing, command execution, and test
+execution into AcornOps repo-local validation rules.
+
+## Repo-local harness
+
+Each product repository should commit its own:
+
+- `AGENTS.md`
+- `ARCHITECTURE.md`
+- `docs/index.md`
+- `docs/DEVELOPMENT.md`
+- `docs/OPERATIONS.md`
+- `docs/DESIGN.md`
+- `docs/PLANS.md`
+- `docs/AGENT_HANDOFF.md`
+- `docs/QUALITY_SCORE.md`
+- `docs/RELIABILITY.md`
+- `docs/SECURITY.md`
+- `docs/contracts/README.md`
+- `docs/contracts/manifest.json`
+- `scripts/check-harness.*`
+- `scripts/check-contracts.*`
+- one canonical validation command
+
+The repository-local files are authoritative for that repository. Shared
+templates provide structure only.
+
+For whole-system topology, use one canonical owner instead of duplicating large
+diagrams in every repo. In AcornOps, that owner is
+`docs/system-architecture.md` in the workspace root; component repos should link
+to it from their docs index. Deployment-specific topology lives in
+`acornops-deployment/docs/deployment-architecture.md`.
+
+## Shared skills
+
+Shared skills are synced into:
+
+```text
+.agents/skills/shared
+```
+
+Repo-specific skills stay in:
+
+```text
+.agents/skills/local
+```
+
+Shared skills are synced with `rsync --delete` only inside the shared skills
+directory. Do not place repo-owned skills or custom files under
+`.agents/skills/shared`.
+
+The sync writes `.agents/skills/shared/.standards-version` so a product repo can
+see which standards revision last populated shared skills.
+
+## Template adoption
+
+Use `templates/repository/` when bootstrapping or improving a repository harness.
+Copy missing files, then replace placeholders with concrete repository facts.
+
+Do not use templates as live includes. A product repository should continue to
+work when checked out alone.
+
+## Validation strategy
+
+Every repository should expose one obvious validation command:
+
+- JavaScript/TypeScript: usually `npm run validate`
+- Python service: usually `task validate`
+- Deployment/integration: usually `task validate`
+
+That command should run the repository's local checks only. Cross-repo checks
+belong in the deployment or platform harness.
+
+Unit tests, integration tests, contract checks, smoke tests, and CI gates are
+part of the harness. Markdown files define when each validation depth is
+required; scripts, task runners, package commands, and CI enforce the rule.
+Agents must include exact validation evidence before handoff.
+
+Documentation is also part of the harness. Changes to features, APIs,
+configuration, deployment behavior, operations, security, or reliability should
+update the nearest durable doc in the same change. If no docs change is needed,
+the handoff should include `Docs impact: none` with the reason.
+
+## Reconciling shared and local checks
+
+Shared standards define shape and expectations:
+
+- docs must exist
+- development and operations guides must be present
+- contracts must be documented
+- high-risk areas must be listed
+- shared skills must follow metadata rules
+- validation must be explicit
+- handoff evidence must name exact commands and outcomes
+- commit and pull request title guidance should be discoverable
+
+Local repositories define substance:
+
+- exact build/test/lint commands
+- exact handoff and validation commands
+- architecture boundaries
+- service-specific contract checks
+- development and operations details
+- UI smoke tests
+- migration and rollout checks
+- domain-specific security rules
+
+If shared and local guidance conflict, repo-local `AGENTS.md` wins for that
+repository. Update this workspace repository only when the conflict reveals a
+better organization-wide rule.
+
+## Recommended update flow
+
+1. Update shared skills or templates here.
+2. Run `./scripts/harness/check-agent-harness.sh`.
+3. Sync shared skills with `./scripts/sync/shared-skills.sh` when needed.
+4. In each affected product repo, review generated diffs.
+5. Run that repo's local validation command.
+6. Commit product repo changes separately.
+
+## What not to centralize
+
+Do not centralize:
+
+- service architecture docs
+- contract manifests owned by product repos
+- CI workflows that need repository secrets or runtime assumptions
+- local skills
+- local validation scripts
+- product decisions and UX rules
+
+Also do not centralize vendor-specific agent instruction files. `AGENTS.md`
+stays the generic repository entrypoint.
+
+Centralizing these would make standalone repositories less legible to agents and
+reviewers.

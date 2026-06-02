@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, "feat/*", "feature/*" ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate agent harness
+        run: ./scripts/harness/check-agent-harness.sh
+      - name: Validate pull request title
+        if: github.event_name == 'pull_request'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node scripts/harness/check-conventional-commits.mjs --env PR_TITLE
+      - name: Validate pushed commit messages
+        if: github.event_name == 'push'
+        run: node scripts/harness/check-conventional-commits.mjs --range "${{ github.event.before }}..${{ github.sha }}"

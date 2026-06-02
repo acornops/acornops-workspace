@@ -1,0 +1,78 @@
+version: '3'
+
+silent: true
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  validate:
+    desc: Validate workspace standards, harness, and contracts
+    cmds:
+      - ./scripts/harness/check-agent-harness.sh
+      - node scripts/harness/check-conventional-commits.mjs --last 1
+      - node scripts/harness/check-platform-harness.mjs
+      - node scripts/harness/check-platform-contracts.mjs
+
+  setup:
+    desc: Clone missing child repositories over SSH and check workspace readiness
+    cmds:
+      - ./scripts/workspace/bootstrap.mjs
+      - ./scripts/workspace/doctor.mjs
+
+  agent-harness:validate:
+    desc: Validate workspace agent harness and shared skills
+    cmds:
+      - ./scripts/harness/check-agent-harness.sh
+
+  platform:harness:
+    desc: Validate child repository harness adoption
+    cmds:
+      - node scripts/harness/check-platform-harness.mjs
+
+  platform:contracts:
+    desc: Validate cross-repository contract manifests
+    cmds:
+      - node scripts/harness/check-platform-contracts.mjs
+
+  commits:validate:
+    desc: Validate Conventional Commits for workspace commits or messages
+    cmds:
+      - node scripts/harness/check-conventional-commits.mjs {{.CLI_ARGS}}
+
+  sync-skills:
+    desc: Sync shared skills into configured child repositories
+    cmds:
+      - ./scripts/sync/shared-skills.sh {{.CLI_ARGS}}
+
+  workspace:status:
+    desc: Show parent and child repository status
+    cmds:
+      - ./scripts/workspace/status.mjs
+
+  workspace:fetch:
+    desc: Fetch remote refs for the workspace and child repositories
+    cmds:
+      - ./scripts/workspace/fetch.mjs {{.CLI_ARGS}}
+
+  workspace:update:
+    desc: Fast-forward clean default branches after fetching
+    cmds:
+      - ./scripts/workspace/update.mjs {{.CLI_ARGS}}
+
+  workspace:bootstrap:
+    desc: Clone missing child repositories from workspace.yaml over SSH
+    cmds:
+      - ./scripts/workspace/bootstrap.mjs {{.CLI_ARGS}}
+
+  workspace:doctor:
+    desc: Check local tools, child repositories, and remotes
+    cmds:
+      - ./scripts/workspace/doctor.mjs
+
+  workspace:validate:
+    desc: Dry-run configured child repository validation commands
+    cmds:
+      - ./scripts/workspace/validate.mjs --dry-run --platform

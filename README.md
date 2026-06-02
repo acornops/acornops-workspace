@@ -1,0 +1,233 @@
+<p align="center">
+  <img width="220" src="https://raw.githubusercontent.com/acornops/docs/main/logo/light.svg" alt="AcornOps" />
+</p>
+
+<h1 align="center">AcornOps Workspace</h1>
+
+<p align="center">
+  <a href="https://github.com/acornops/acornops-workspace/actions/workflows/ci.yml"><img src="https://github.com/acornops/acornops-workspace/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <img src="https://img.shields.io/badge/workspace-harness-blue.svg" alt="Workspace harness" />
+  <img src="https://img.shields.io/badge/contracts-checked-blue.svg" alt="Contracts checked" />
+  <img src="https://img.shields.io/badge/commits-conventional-green.svg" alt="Conventional commits" />
+</p>
+
+<p align="center">
+  Versioned workspace harness for AcornOps multi-repository development.
+</p>
+
+This repository is the developer entry point for working across AcornOps
+repositories. It owns the workspace manifest, setup and validation helpers,
+shared repository templates, and cross-repository documentation. It does not own
+product source code. Product repositories are checked out as ignored child
+directories and remain independently versioned.
+
+## Workspace Model
+
+AcornOps uses three layers:
+
+1. Workspace harness in this repository.
+2. Repo-local harnesses committed to each standalone product repository.
+3. Platform and integration checks that validate cross-repository contracts.
+
+Start here when setting up the workspace, checking repository status, or running
+cross-repository validation. Agent-specific operating rules live in
+[AGENTS.md](AGENTS.md); `CLAUDE.md` imports that same file so agent-facing
+instructions stay in one place.
+
+## Agent-Assisted Development
+
+This workspace is structured for human and agent-assisted development. When
+using Codex, Claude Code, or another coding agent, start the agent from the
+workspace root for best results. The root contains the workspace manifest,
+shared agent guidance, validation helpers, and cross-repository workflow rules
+that help agents coordinate changes across child repositories.
+
+For single-repository work, agents should still read that child repository's
+`AGENTS.md` before editing files there.
+
+## What Belongs Here
+
+- workspace setup and validation helpers
+- shared agent skills used across AcornOps repositories
+- workspace manifest and repository capability summary
+- repository harness templates
+- synchronization tooling for shared skills
+- cross-repository harness and contract checks
+- vendor-neutral handoff and Conventional Commit policy
+
+## What Stays In Each Product Repo
+
+- service source code and tests
+- repo-specific `AGENTS.md`
+- architecture and product docs
+- contract manifests owned by that repo
+- validation commands and CI workflows
+- repo-specific local skills under `.agents/skills/local`
+- service-specific runbooks, migrations, and rollout notes
+
+## Repository Layout
+
+```text
+acornops/
+  AGENTS.md
+  CLAUDE.md
+  workspace.yaml
+  .agents/skills/shared/
+  docs/
+    agent-harness/
+  templates/
+    repository/
+    pr/
+  scripts/
+    harness/
+    sync/
+    workspace/
+      *.mjs
+    lib/
+  change-sets/
+  acornops-deployment/  # ignored child repo for deployment and operations
+  control-plane/  # ignored child repo for the control plane API
+  docs-website/  # ignored child repo for public Mintlify docs
+  execution-engine/  # ignored child repo for run execution
+  k8s-agent/  # ignored child repo for workload-cluster agents
+  vm-agent/  # ignored child repo for Linux/systemd VM agent work
+  llm-gateway/  # ignored child repo for model and MCP brokering
+  management-console/  # ignored child repo for the browser console
+```
+
+Child repositories are intentionally ignored by this parent repository. Do not
+stage or commit product repository contents from the workspace repo.
+
+## Getting Started
+
+Clone the workspace:
+
+```bash
+git clone git@github.com:acornops/acornops-workspace.git acornops
+cd acornops
+```
+
+Set up the workspace:
+
+```bash
+task setup
+```
+
+`task setup` clones missing child repositories from `workspace.yaml` over SSH,
+normalizes existing matching GitHub remotes to SSH, and then checks local tools,
+child repository remotes, and workspace status.
+
+Understand the platform:
+
+- [System Architecture](docs/system-architecture.md) explains how the AcornOps
+  components, runtime flows, and repository ownership fit together.
+- [`workspace.yaml`](workspace.yaml) lists every child repository, local path,
+  remote, default branch, and validation command.
+
+Preview clone actions before running setup:
+
+```bash
+task workspace:bootstrap -- --dry-run
+```
+
+If Task is not installed yet, use the underlying scripts directly:
+
+```bash
+./scripts/workspace/bootstrap.mjs
+./scripts/workspace/doctor.mjs
+```
+
+Dependency installation and service startup stay repo-local because each product
+repo owns its own runtime. After bootstrap, read the affected child repo's
+README and validation command in `workspace.yaml`.
+
+More detail: [Developer Getting Started](docs/developer-getting-started.md).
+
+## Daily Maintenance
+
+Inspect parent and child repository status:
+
+```bash
+task workspace:status
+```
+
+Fetch remote refs without changing local branches:
+
+```bash
+task workspace:fetch
+```
+
+Fast-forward only clean repositories on their default branch:
+
+```bash
+task workspace:update
+```
+
+`task workspace:update` skips repositories with local changes, repositories on
+non-default branches, branches with unpushed commits, and divergent histories.
+
+## Validate
+
+```bash
+task validate
+```
+
+`task validate` runs the workspace harness, recent commit subject validation,
+child repository harness checks, and cross-repository contract checks. The
+underlying commands are:
+
+```bash
+./scripts/harness/check-agent-harness.sh
+node scripts/harness/check-conventional-commits.mjs --last 1
+node scripts/harness/check-platform-harness.mjs
+node scripts/harness/check-platform-contracts.mjs
+```
+
+Commit subjects and pull request titles must follow
+[Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
+See [Conventional Commits](docs/agent-harness/conventional-commits.md).
+
+## Coordinated Changes
+
+For changes that touch more than one product repository:
+
+- identify the affected repositories from `workspace.yaml`
+- keep product code changes inside the child repositories
+- record coordinated work in `change-sets/` when the work spans repos
+- run each affected repo's validation plus workspace/platform checks
+- link related PRs and include merge order when changes depend on each other
+
+Agent-facing workflow details and helper-script usage belong in
+[AGENTS.md](AGENTS.md) and the shared skill workflow, not in this developer
+README.
+
+More detail:
+
+- [Change Sets](change-sets/README.md)
+- [Repository Capability Summary](docs/agent-harness/repository-capability-summary.md)
+- [Agent Handoff Policy](docs/agent-harness/agent-handoff-policy.md)
+- [Cross-Repo Skill Workflow](.agents/skills/shared/cross-repo-change/workflow.md)
+
+## Shared Skills
+
+Shared skills are maintained in this workspace and synced into child
+repositories when the shared agent guidance changes.
+
+Preview changes first:
+
+```bash
+./scripts/sync/shared-skills.sh --dry-run
+```
+
+Apply intentionally:
+
+```bash
+./scripts/sync/shared-skills.sh
+```
+
+The sync command updates only `.agents/skills/shared` and `.agents/skills/README.md`
+inside configured child repositories. It never overwrites
+`.agents/skills/local`.
+
+The parent workspace does not keep a `.agents/skills/local` directory. Workspace
+skills are shared by default; child repositories keep their own local skills.
