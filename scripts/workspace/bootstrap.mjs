@@ -8,7 +8,7 @@ function usage() {
   console.log(`Usage: ./scripts/workspace/bootstrap.mjs [--dry-run] [repo...]
 
 Clone missing child repositories declared in workspace.yaml and normalize matching
-GitHub remotes to the configured SSH URLs.
+GitHub remotes to the configured manifest URLs.
 
 Examples:
   ./scripts/workspace/bootstrap.mjs --dry-run

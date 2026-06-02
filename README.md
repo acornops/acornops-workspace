@@ -103,7 +103,7 @@ stage or commit product repository contents from the workspace repo.
 Clone the workspace:
 
 ```bash
-git clone git@github.com:acornops/acornops-workspace.git acornops
+git clone https://github.com/acornops/acornops-workspace.git acornops
 cd acornops
 ```
 
@@ -113,9 +113,9 @@ Set up the workspace:
 task setup
 ```
 
-`task setup` clones missing child repositories from `workspace.yaml` over SSH,
-normalizes existing matching GitHub remotes to SSH, and then checks local tools,
-child repository remotes, and workspace status.
+`task setup` clones missing child repositories from `workspace.yaml` over HTTPS,
+normalizes existing matching GitHub remotes to the workspace manifest, and then
+checks local tools, child repository remotes, and workspace status.
 
 Understand the platform:
 

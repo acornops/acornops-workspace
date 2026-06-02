@@ -7,14 +7,14 @@ to repo-local commands without turning product repositories into submodules.
 ## First-Time Setup
 
 ```bash
-git clone git@github.com:acornops/acornops-workspace.git acornops
+git clone https://github.com/acornops/acornops-workspace.git acornops
 cd acornops
 task setup
 ```
 
-`task setup` clones missing child repositories from `workspace.yaml` over SSH,
-normalizes existing matching GitHub remotes to SSH, and then runs the workspace
-doctor.
+`task setup` clones missing child repositories from `workspace.yaml` over HTTPS,
+normalizes existing matching GitHub remotes to the workspace manifest, and then
+runs the workspace doctor.
 
 ## Understand The Platform
 

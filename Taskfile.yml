@@ -17,7 +17,7 @@ tasks:
       - node scripts/harness/check-platform-contracts.mjs
 
   setup:
-    desc: Clone missing child repositories over SSH and check workspace readiness
+    desc: Clone missing child repositories over HTTPS and check workspace readiness
     cmds:
       - ./scripts/workspace/bootstrap.mjs
       - ./scripts/workspace/doctor.mjs
@@ -63,7 +63,7 @@ tasks:
       - ./scripts/workspace/update.mjs {{.CLI_ARGS}}
 
   workspace:bootstrap:
-    desc: Clone missing child repositories from workspace.yaml over SSH
+    desc: Clone missing child repositories from workspace.yaml over HTTPS
     cmds:
       - ./scripts/workspace/bootstrap.mjs {{.CLI_ARGS}}
 
