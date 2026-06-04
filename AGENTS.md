@@ -55,7 +55,9 @@ local validation and handoff rules.
   repository checkouts, and `./scripts/workspace/bootstrap.mjs` to clone them.
 - Use `./scripts/workspace/doctor.mjs` when checking whether a developer or
   agent workspace is ready for multi-repo work.
-- Use one shared branch slug across all affected child repositories.
+- Use one shared branch slug across all affected child repositories. Prefer
+  descriptive `feat/`, `fix/`, `docs/`, or `chore/` branch slugs, and avoid
+  agent/tool-specific prefixes.
 - Use Conventional Commits for every commit subject and pull request title.
 - Prefer a central tracking issue for work that touches multiple repositories.
 - Use `./scripts/workspace/status.mjs` before and after multi-repo work.
