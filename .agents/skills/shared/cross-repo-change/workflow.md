@@ -17,9 +17,10 @@ clearly created them.
 ## Branching
 
 - Use one branch slug across all affected repos.
-- Prefer `feat/<short-topic>` for features, `fix/<short-topic>` for defects,
-  `docs/<short-topic>` for documentation-only work, and `chore/<short-topic>`
-  for harness or maintenance changes.
+- Prefer descriptive `feat/<short-topic>` for features, `fix/<short-topic>` for
+  defects, `docs/<short-topic>` for documentation-only work, and
+  `chore/<short-topic>` for harness or maintenance changes.
+- Avoid agent/tool-specific branch prefixes.
 - Do not branch untouched repos.
 - Use `./scripts/workspace/branch.mjs <branch-slug> <repo...>` for matching branches.
 

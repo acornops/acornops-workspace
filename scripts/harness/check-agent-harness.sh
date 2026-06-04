@@ -168,6 +168,7 @@ expect_contains "docs/agent-harness/agent-handoff-policy.md" "exact commands run
 expect_contains "docs/agent-harness/harness-adoption-guide.md" "Repo-local harness"
 expect_contains "docs/agent-harness/harness-adoption-guide.md" "Workspace harness"
 expect_contains "docs/agent-harness/DEVELOPMENT.md" "Documentation Drift Control"
+expect_contains ".github/workflows/ci.yml" 'branches: ["**"]'
 expect_contains "docs/developer-getting-started.md" "task setup"
 expect_contains "docs/developer-getting-started.md" "System Architecture"
 expect_contains "docs/developer-getting-started.md" "Agent-Assisted Development"
@@ -184,6 +185,7 @@ expect_contains ".agents/skills/shared/contract-change/SKILL.md" "docs/contracts
 expect_contains ".agents/skills/shared/workspace-maintenance/SKILL.md" "workspace.yaml"
 expect_contains ".agents/skills/shared/testing-validation/SKILL.md" "handoff evidence"
 expect_contains ".agents/skills/shared/cross-repo-change/SKILL.md" "merge order"
+expect_contains ".agents/skills/shared/cross-repo-change/workflow.md" "Avoid agent/tool-specific branch prefixes."
 expect_contains ".agents/skills/shared/open-pr/SKILL.md" "draft PR"
 expect_contains ".agents/skills/shared/open-pr/workflow.md" "check-conventional-commits.mjs"
 expect_contains "scripts/sync/shared-skills.sh" "--dry-run"
