@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="220" src="https://raw.githubusercontent.com/acornops/docs/main/logo/light.svg" alt="AcornOps" />
+  <img width="220" src="https://raw.githubusercontent.com/acornops/docs-website/main/logo/light.svg" alt="AcornOps" />
 </p>
 
 <h1 align="center">AcornOps Workspace</h1>
