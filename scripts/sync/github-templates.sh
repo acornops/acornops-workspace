@@ -43,7 +43,7 @@ if [[ ! -f "${MANIFEST_FILE}" ]]; then
 fi
 
 template_files=(
-  ".github/PULL_REQUEST_TEMPLATE/default.md"
+  ".github/pull_request_template.md"
   ".github/PULL_REQUEST_TEMPLATE/cross-repo.md"
   ".github/PULL_REQUEST_TEMPLATE/docs-maintenance.md"
   ".github/ISSUE_TEMPLATE/cross-repo-change.md"

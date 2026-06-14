@@ -95,12 +95,16 @@ Limit sync to specific repositories by name:
 ### What It Syncs
 
 ```text
-.github/PULL_REQUEST_TEMPLATE/default.md
+.github/pull_request_template.md
 .github/PULL_REQUEST_TEMPLATE/cross-repo.md
 .github/PULL_REQUEST_TEMPLATE/docs-maintenance.md
 .github/ISSUE_TEMPLATE/cross-repo-change.md
 .github/ISSUE_TEMPLATE/docs-maintenance.md
 ```
+
+`.github/pull_request_template.md` is the auto-loaded default pull request
+template. Files under `.github/PULL_REQUEST_TEMPLATE/` are selected explicitly
+by template name.
 
 Synced templates intentionally avoid default labels and assignees. Labels,
 assignees, branch protection, and repository settings remain child-repository
