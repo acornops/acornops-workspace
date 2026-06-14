@@ -22,8 +22,24 @@ cron: "17 16 * * 5"
 ```
 
 The workflow can also be started manually with `workflow_dispatch`. Manual runs
-may pass an explicit base commit SHA for the maintenance window or override the
-Copilot model.
+support these inputs:
+
+- `base_sha`: explicitly sets the start of the maintenance window
+- `fallback_commits`: sets the fallback history depth when no previous
+  successful docs-maintenance run is available (default `20`)
+- `copilot_model`: overrides the Copilot coding agent model
+
+When `base_sha` is omitted, the workflow resolves the maintenance window base in
+this order:
+
+1. the most recent successful `docs-maintenance.yml` run on the same branch with
+   a different `head_sha`
+2. `HEAD~<fallback_commits>` when that commit exists locally
+3. the repository root commit
+
+If the selected base commit is missing locally or is not an ancestor of `HEAD`,
+the workflow falls back to the repository merge base or, if needed, the root
+commit.
 
 ## Temporary Evidence Bundle
 
