@@ -1,0 +1,111 @@
+name: Docs maintenance
+
+run-name: Docs maintenance for ${{ github.ref_name }}
+
+on:
+  schedule:
+    # Saturday 00:17 Asia/Singapore. GitHub cron schedules use UTC.
+    - cron: "17 16 * * 5"
+  workflow_dispatch:
+    inputs:
+      base_sha:
+        description: "Optional base commit SHA for the maintenance window."
+        required: false
+        type: string
+      fallback_commits:
+        description: "Fallback commit depth when no previous successful run is available."
+        required: false
+        default: "20"
+        type: string
+      copilot_model:
+        description: "Copilot coding agent model. Must be supported by the authenticated account and organization policy."
+        required: false
+        default: "gpt-5.4"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: docs-maintenance-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  docs-maintenance:
+    name: Prepare docs maintenance task
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      INPUT_BASE_SHA: ${{ github.event.inputs.base_sha || '' }}
+      INPUT_FALLBACK_COMMITS: ${{ github.event.inputs.fallback_commits || '20' }}
+      COPILOT_AGENT_MODEL: ${{ github.event.inputs.copilot_model || vars.COPILOT_AGENT_MODEL || 'gpt-5.4' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve maintenance window
+        id: window
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          head_sha="$(git rev-parse HEAD)"
+          base_sha="${INPUT_BASE_SHA}"
+          fallback_commits="${INPUT_FALLBACK_COMMITS:-20}"
+
+          if [[ -z "${base_sha}" ]]; then
+            base_sha="$(
+              gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows/docs-maintenance.yml/runs?branch=${GITHUB_REF_NAME}&status=success&per_page=10" \
+                --jq ".workflow_runs[] | select(.head_sha != \"${head_sha}\") | .head_sha" \
+                | head -n 1
+            )" || true
+          fi
+
+          if [[ -z "${base_sha}" ]]; then
+            if git rev-parse --verify "HEAD~${fallback_commits}" >/dev/null 2>&1; then
+              base_sha="$(git rev-parse "HEAD~${fallback_commits}")"
+            else
+              base_sha="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
+            fi
+          fi
+
+          if ! git cat-file -e "${base_sha}^{commit}" >/dev/null 2>&1; then
+            echo "Base SHA ${base_sha} is not available locally; using repository root commit." >&2
+            base_sha="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
+          fi
+
+          if ! git merge-base --is-ancestor "${base_sha}" "${head_sha}"; then
+            merge_base="$(git merge-base "${base_sha}" "${head_sha}" || true)"
+            if [[ -n "${merge_base}" ]]; then
+              base_sha="${merge_base}"
+            else
+              base_sha="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
+            fi
+          fi
+
+          echo "base=${base_sha}" >> "${GITHUB_OUTPUT}"
+          echo "head=${head_sha}" >> "${GITHUB_OUTPUT}"
+          echo "Maintenance window: ${base_sha}..${head_sha}"
+
+      - name: Build maintenance evidence bundle
+        env:
+          EVIDENCE_DIR: ${{ runner.temp }}/docs-maintenance-evidence
+        run: |
+          node scripts/docs-maintenance/collect-evidence.mjs \
+            --base "${{ steps.window.outputs.base }}" \
+            --head "${{ steps.window.outputs.head }}" \
+            --out "${EVIDENCE_DIR}"
+
+      - name: Dispatch Copilot docs maintenance task
+        env:
+          COPILOT_AGENT_PAT: ${{ secrets.COPILOT_AGENT_PAT }}
+          EVIDENCE_DIR: ${{ runner.temp }}/docs-maintenance-evidence
+        run: |
+          node scripts/docs-maintenance/start-copilot-task.mjs \
+            --evidence "${EVIDENCE_DIR}" \
+            --model "${COPILOT_AGENT_MODEL}" \
+            --base-ref "${GITHUB_REF_NAME}"
