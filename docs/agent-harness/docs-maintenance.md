@@ -1,0 +1,103 @@
+# Docs Maintenance
+
+AcornOps treats documentation and agent guidance as maintained engineering
+surfaces. The docs-maintenance workflow prepares a deterministic evidence
+bundle in the GitHub Actions runner's temporary directory, passes that bundle
+to a GitHub Copilot cloud agent task, and then lets the temporary files expire
+with the runner.
+
+## Schedule
+
+The parent workspace workflow lives at:
+
+```text
+.github/workflows/docs-maintenance.yml
+```
+
+It runs weekly at Saturday 00:17 Asia/Singapore, which is Friday 16:17 UTC in
+GitHub cron syntax:
+
+```yaml
+cron: "17 16 * * 5"
+```
+
+The workflow can also be started manually with `workflow_dispatch`. Manual runs
+may pass an explicit base commit SHA for the maintenance window or override the
+Copilot model.
+
+## Temporary Evidence Bundle
+
+The workflow writes the evidence bundle under:
+
+```text
+${{ runner.temp }}/docs-maintenance-evidence
+```
+
+The bundle is not committed and is not uploaded as a GitHub Actions artifact.
+It is read by the Copilot task dispatcher in the same job and then discarded
+when the runner is cleaned up. The bundle contains:
+
+- base and head commits
+- commit log for the maintenance window
+- changed files and name-status diff
+- diff stat
+- changed-file categories
+- validation signals from `package.json`, `Taskfile.yml`, and `workspace.yaml`
+
+The collector script is:
+
+```text
+scripts/docs-maintenance/collect-evidence.mjs
+```
+
+## Copilot Task
+
+After building the temporary evidence bundle, the workflow calls GitHub's Agent
+Tasks API through:
+
+```text
+scripts/docs-maintenance/start-copilot-task.mjs
+```
+
+The workflow expects this secret:
+
+```text
+COPILOT_AGENT_PAT
+```
+
+Use a fine-grained personal access token for the user whose Copilot entitlement
+should run the task. The token needs `Agent tasks` repository permission with
+read and write access for the target repository. GitHub currently documents the
+start-task endpoint as public preview and available to Copilot Business or
+Copilot Enterprise users.
+
+The default model is:
+
+```text
+gpt-5.4
+```
+
+Override the model with the manual workflow input or a repository/organization
+variable named:
+
+```text
+COPILOT_AGENT_MODEL
+```
+
+Only use model IDs documented by GitHub for Copilot cloud agent tasks and
+available under the authenticated account's plan and organization policy.
+
+## Guardrails
+
+- Do not run broad documentation rewrites from the scheduled workflow.
+- Make only evidence-backed documentation or agent-guidance updates.
+- Keep child repository workflows and secrets repository-owned.
+- Use the docs-maintenance issue or pull request templates when human or agent
+  follow-up is required.
+
+## Next Step
+
+After the parent workflow is stable, add small caller workflows to one or two
+child repositories. Child repositories should provide their own
+`COPILOT_AGENT_PAT` secret or inherit an organization secret scoped to the
+repositories that should run docs maintenance.

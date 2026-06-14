@@ -48,11 +48,29 @@ Apply shared skill sync:
 ./scripts/sync/shared-skills.sh
 ```
 
+Preview shared GitHub issue and pull request template sync:
+
+```bash
+./scripts/sync/github-templates.sh --dry-run
+```
+
+Apply shared GitHub template sync:
+
+```bash
+./scripts/sync/github-templates.sh
+```
+
 ## Change Rules
 
 - Update templates when changing required repository harness shape.
+- Update `.github/PULL_REQUEST_TEMPLATE/` and `.github/ISSUE_TEMPLATE/` when
+  changing shared pull request or issue intake shape.
 - Update `scripts/harness/check-agent-harness.sh` when adding required template files or policy text.
 - Update `docs/agent-harness/harness-adoption-guide.md` when the product-repo adoption model changes.
+- Keep shared issue templates free of default labels or assignees unless the
+  corresponding repository settings are managed across all child repositories.
+- Keep `.github/workflows/docs-maintenance.yml` constrained to evidence-backed
+  documentation and agent-guidance updates.
 - Do not put product-specific decisions in the parent workspace repository.
 
 ## Documentation Harness

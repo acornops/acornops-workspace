@@ -67,6 +67,28 @@ directory. Do not place repo-owned skills or custom files under
 The sync writes `.agents/skills/shared/.standards-version` so a product repo can
 see which standards revision last populated shared skills.
 
+## Shared GitHub templates
+
+Workspace-owned pull request and issue templates live in the parent repository
+under:
+
+```text
+.github/PULL_REQUEST_TEMPLATE
+.github/ISSUE_TEMPLATE
+```
+
+Sync them into child repositories with:
+
+```bash
+./scripts/sync/github-templates.sh --dry-run
+./scripts/sync/github-templates.sh
+```
+
+The GitHub template sync copies only allowlisted template files. It does not
+sync `.github/workflows`, delete child-owned `.github` files, or replace
+repository-specific automation. Shared issue templates do not set default
+labels or assignees; those are repository-specific GitHub settings.
+
 ## Template adoption
 
 Use `templates/repository/` when bootstrapping or improving a repository harness.
@@ -126,12 +148,13 @@ better organization-wide rule.
 
 ## Recommended update flow
 
-1. Update shared skills or templates here.
+1. Update shared skills, GitHub templates, or repository templates here.
 2. Run `./scripts/harness/check-agent-harness.sh`.
 3. Sync shared skills with `./scripts/sync/shared-skills.sh` when needed.
-4. In each affected product repo, review generated diffs.
-5. Run that repo's local validation command.
-6. Commit product repo changes separately.
+4. Sync GitHub templates with `./scripts/sync/github-templates.sh` when needed.
+5. In each affected product repo, review generated diffs.
+6. Run that repo's local validation command.
+7. Commit product repo changes separately.
 
 ## What not to centralize
 

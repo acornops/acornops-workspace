@@ -14,6 +14,7 @@ Durable repository-specific knowledge belongs in each child repository.
 - [Harness Adoption Guide](docs/agent-harness/harness-adoption-guide.md)
 - [Agent Handoff Policy](docs/agent-harness/agent-handoff-policy.md)
 - [Conventional Commits](docs/agent-harness/conventional-commits.md)
+- [Docs Maintenance](docs/agent-harness/docs-maintenance.md)
 - [Repository Capability Summary](docs/agent-harness/repository-capability-summary.md)
 - [Skill Authoring Guide](docs/agent-harness/skill-authoring-guide.md)
 - [Shared Skills](.agents/skills/shared/)
@@ -95,11 +96,14 @@ local validation and handoff rules.
 - `task validate` when Task is installed
 - `./scripts/sync/shared-skills.sh --dry-run` when shared skills or workspace
   manifest entries change
+- `./scripts/sync/github-templates.sh --dry-run` when shared GitHub issue or
+  pull request templates change
 
 ## High-Risk Areas
 
 - Parent `.gitignore` rules that could accidentally expose child repo contents.
 - Sync scripts that delete or overwrite destination files.
+- GitHub template sync accidentally touching child repository workflows.
 - Broad shared guidance that conflicts with repo-local ownership.
 - Skill descriptions that trigger too broadly.
 - Cross-repo PRs without related PR links or merge order.

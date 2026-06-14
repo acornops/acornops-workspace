@@ -17,9 +17,9 @@
 
 This repository is the developer entry point for working across AcornOps
 repositories. It owns the workspace manifest, setup and validation helpers,
-shared repository templates, and cross-repository documentation. It does not own
-product source code. Product repositories are checked out as ignored child
-directories and remain independently versioned.
+shared repository templates, shared GitHub templates, and cross-repository
+documentation. It does not own product source code. Product repositories are
+checked out as ignored child directories and remain independently versioned.
 
 ## Workspace Model
 
@@ -51,7 +51,7 @@ For single-repository work, agents should still read that child repository's
 - shared agent skills used across AcornOps repositories
 - workspace manifest and repository capability summary
 - repository harness templates
-- synchronization tooling for shared skills
+- synchronization tooling for shared skills and GitHub templates
 - cross-repository harness and contract checks
 - vendor-neutral handoff and Conventional Commit policy
 
@@ -64,6 +64,7 @@ For single-repository work, agents should still read that child repository's
 - validation commands and CI workflows
 - repo-specific local skills under `.agents/skills/local`
 - service-specific runbooks, migrations, and rollout notes
+- repository-specific labels and GitHub workflow secrets
 
 ## Repository Layout
 
@@ -72,13 +73,16 @@ acornops/
   AGENTS.md
   CLAUDE.md
   workspace.yaml
+  .github/
+    ISSUE_TEMPLATE/
+    PULL_REQUEST_TEMPLATE/
   .agents/skills/shared/
   docs/
     agent-harness/
   templates/
     repository/
-    pr/
   scripts/
+    docs-maintenance/
     harness/
     sync/
     workspace/
@@ -206,6 +210,7 @@ More detail:
 - [Change Sets](change-sets/README.md)
 - [Repository Capability Summary](docs/agent-harness/repository-capability-summary.md)
 - [Agent Handoff Policy](docs/agent-harness/agent-handoff-policy.md)
+- [Docs Maintenance](docs/agent-harness/docs-maintenance.md)
 - [Cross-Repo Skill Workflow](.agents/skills/shared/cross-repo-change/workflow.md)
 
 ## Shared Skills
@@ -231,3 +236,20 @@ inside configured child repositories. It never overwrites
 
 The parent workspace does not keep a `.agents/skills/local` directory. Workspace
 skills are shared by default; child repositories keep their own local skills.
+
+## GitHub Templates
+
+Workspace-owned pull request and issue templates live under `.github/` so the
+parent repository can use them directly. They can also be synced into configured
+child repositories:
+
+```bash
+./scripts/sync/github-templates.sh --dry-run
+./scripts/sync/github-templates.sh
+```
+
+The GitHub template sync copies only allowlisted issue and pull request template
+files. It does not touch child repository workflows or delete child-owned
+`.github` files. Shared issue templates intentionally do not set default labels;
+labels are repository-specific and should be configured inside each child
+repository when needed.
