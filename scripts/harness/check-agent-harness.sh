@@ -177,7 +177,7 @@ expect_contains "docs/agent-harness/agent-handoff-policy.md" "exact commands run
 expect_contains "docs/agent-harness/harness-adoption-guide.md" "Repo-local harness"
 expect_contains "docs/agent-harness/harness-adoption-guide.md" "Workspace harness"
 expect_contains "docs/agent-harness/DEVELOPMENT.md" "Documentation Drift Control"
-expect_contains ".github/workflows/ci.yml" 'branches: ["**"]'
+expect_contains ".github/workflows/ci.yml" "branches: [ main ]"
 expect_contains "docs/developer-getting-started.md" "task setup"
 expect_contains "docs/developer-getting-started.md" "System Architecture"
 expect_contains "docs/developer-getting-started.md" "Agent-Assisted Development"
