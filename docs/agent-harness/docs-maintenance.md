@@ -103,6 +103,24 @@ COPILOT_AGENT_MODEL
 Only use model IDs documented by GitHub for Copilot cloud agent tasks and
 available under the authenticated account's plan and organization policy.
 
+Before the agent creates a branch, commit, or pull request, it must first
+decide whether the evidence justifies a documentation or agent-guidance update.
+If no evidence-backed updates are needed, the task should end without creating a
+branch, commit, or pull request.
+
+When updates are needed, keep the resulting pull request and commit history
+docs-maintenance specific:
+
+- use a Conventional Commit pull request title beginning with `docs:`
+- make every commit subject a Conventional Commit
+- if an initial planning commit is needed, use exactly
+  `docs: plan docs maintenance task`
+- use the docs-maintenance pull request template when available
+- record the evidence reviewed, docs impact, validation commands run, skipped
+  checks, and residual risk
+- run the repository validation command when discoverable, or explain why it
+  could not run
+
 ## Guardrails
 
 - Do not run broad documentation rewrites from the scheduled workflow.
