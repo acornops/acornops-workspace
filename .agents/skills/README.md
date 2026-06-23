@@ -13,6 +13,8 @@ target repositories, then run the sync intentionally.
 
 - `contract-change`: API, schema, manifest, OpenAPI, DTO, generated-client, and
   cross-repository integration-boundary changes.
+- `codex-goals`: drafting or refining Codex `/goal` commands with evidence,
+  boundaries, iteration policy, and blocked stop conditions.
 - `cross-repo-change`: branch, change-set, validation, merge-order, and PR
   coordination across multiple repositories.
 - `observability`: logs, metrics, health checks, retries, timeouts, and runtime
