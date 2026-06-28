@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reject AI Writing"
+  short_description: "Review prose for AI-writing signs"
+  default_prompt: "Use $acornops-reject-ai-writing to review this draft and decide whether to reject or require revision."
