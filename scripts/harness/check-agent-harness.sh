@@ -223,6 +223,8 @@ expect_contains "change-sets/README.md" "ignored by default"
 expect_contains "docs/agent-harness/sync.md" "./scripts/sync/shared-skills.sh --dry-run"
 expect_contains "docs/agent-harness/docs-maintenance.md" "COPILOT_AGENT_PAT"
 expect_contains "docs/agent-harness/docs-maintenance.md" "not uploaded as a GitHub Actions artifact"
+expect_contains "docs/agent-harness/docs-maintenance.md" "If no evidence-backed updates are needed"
+expect_contains "docs/agent-harness/docs-maintenance.md" "docs: plan docs maintenance task"
 
 legacy_path_pattern="agent-"standards"/"
 if grep -R "${legacy_path_pattern}" \
