@@ -98,6 +98,8 @@ local validation and handoff rules.
   manifest entries change
 - `./scripts/sync/github-templates.sh --dry-run` when shared GitHub issue or
   pull request templates change
+- `./scripts/sync/claude-settings.sh --dry-run` when the shared
+  `.claude/settings.json` changes
 
 ## High-Risk Areas
 

@@ -237,6 +237,19 @@ inside configured child repositories. It never overwrites
 The parent workspace does not keep a `.agents/skills/local` directory. Workspace
 skills are shared by default; child repositories keep their own local skills.
 
+## Claude Settings
+
+The shared `.claude/settings.json` is maintained in this workspace and synced
+into child repositories when it changes:
+
+```bash
+./scripts/sync/claude-settings.sh --dry-run
+./scripts/sync/claude-settings.sh
+```
+
+The sync copies only `.claude/settings.json`. It never syncs the machine-specific
+`.claude/settings.local.json`, and never deletes child-owned `.claude` files.
+
 ## GitHub Templates
 
 Workspace-owned pull request and issue templates live under `.github/` so the

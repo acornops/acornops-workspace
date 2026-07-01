@@ -48,6 +48,18 @@ Apply shared skill sync:
 ./scripts/sync/shared-skills.sh
 ```
 
+Preview shared Claude settings sync:
+
+```bash
+./scripts/sync/claude-settings.sh --dry-run
+```
+
+Apply shared Claude settings sync:
+
+```bash
+./scripts/sync/claude-settings.sh
+```
+
 Preview shared GitHub issue and pull request template sync:
 
 ```bash

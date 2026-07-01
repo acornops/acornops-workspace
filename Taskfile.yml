@@ -47,6 +47,11 @@ tasks:
     cmds:
       - ./scripts/sync/shared-skills.sh {{.CLI_ARGS}}
 
+  sync-claude-settings:
+    desc: Sync .claude/settings.json into configured child repositories
+    cmds:
+      - ./scripts/sync/claude-settings.sh {{.CLI_ARGS}}
+
   sync-github-templates:
     desc: Sync shared GitHub issue and pull request templates into configured child repositories
     cmds:

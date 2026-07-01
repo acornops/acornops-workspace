@@ -152,9 +152,10 @@ better organization-wide rule.
 2. Run `./scripts/harness/check-agent-harness.sh`.
 3. Sync shared skills with `./scripts/sync/shared-skills.sh` when needed.
 4. Sync GitHub templates with `./scripts/sync/github-templates.sh` when needed.
-5. In each affected product repo, review generated diffs.
-6. Run that repo's local validation command.
-7. Commit product repo changes separately.
+5. Sync Claude settings with `./scripts/sync/claude-settings.sh` when needed.
+6. In each affected product repo, review generated diffs.
+7. Run that repo's local validation command.
+8. Commit product repo changes separately.
 
 ## What not to centralize
 

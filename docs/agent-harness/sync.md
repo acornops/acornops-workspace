@@ -5,6 +5,7 @@ The workspace has separate sync scripts for separate ownership surfaces:
 - `scripts/sync/shared-skills.sh` syncs shared agent skills.
 - `scripts/sync/github-templates.sh` syncs shared GitHub issue and pull request
   templates.
+- `scripts/sync/claude-settings.sh` syncs the shared `.claude/settings.json`.
 
 Keep these scripts separate so a change to one surface cannot accidentally
 overwrite another.
@@ -68,6 +69,39 @@ Each product repository should have:
 Do not edit files under `.agents/skills/shared` inside product repos. Make shared
 changes in the parent workspace repo, sync, review diffs, then commit each
 product repository separately.
+
+## Claude Settings Sync
+
+`scripts/sync/claude-settings.sh` distributes the workspace-owned
+`.claude/settings.json` into configured child repositories.
+
+Preview changes first:
+
+```bash
+./scripts/sync/claude-settings.sh --dry-run
+```
+
+Apply changes:
+
+```bash
+./scripts/sync/claude-settings.sh
+```
+
+### What It Syncs
+
+```text
+.claude/settings.json -> <repo>/.claude/settings.json
+```
+
+### What It Does Not Sync
+
+- `.claude/settings.local.json` (machine-specific: absolute paths and personal
+  permissions that must stay per-machine and gitignored)
+- `.claude/skills` and any other child-owned `.claude` contents
+
+The script copies only `.claude/settings.json` and never runs `rsync --delete`
+against child `.claude` directories. Review child repository diffs before
+committing synced settings changes.
 
 ## GitHub Template Sync
 
